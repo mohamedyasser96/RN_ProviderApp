@@ -1,10 +1,10 @@
 import React from 'react';
 import {Button } from 'react-native'
-const fetchLocation = props =>{
+const postLocation = props =>{
     return (
-     <Button title="Get location" onPress={props.onGetLocation} />
+     <Button title="Save location" onPress={props.saveLoc} />
 
     );
 };
 
-export default fetchLocation;
+export default postLocation;

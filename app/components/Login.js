@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Center } from "@builderx/utils";
 import Button7 from "../symbols/button7";
 import Button9 from "../symbols/button9";
-import { Alert, View, StyleSheet, Text, Image, AppRegistry} from "react-native";
+import { Alert, View, StyleSheet, Text, Image, AppRegistry, AsyncStorage} from "react-native";
 import { Button } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -55,7 +55,7 @@ export default class App extends Component {
         try{
         //console.log("Ana fl try")
         await AsyncStorage.setItem('token', token)
-        //this.props.navigation.navigate("Third")
+        this.props.navigation.navigate("Main")
         
       }
       catch(error){
@@ -110,7 +110,7 @@ export default class App extends Component {
             <Text style={styles.bcont2}>Login</Text>
           </Button>
         </Center>
-        <Button style={styles.button9} onPress={() => {navigate('Main')}}>
+        <Button style={styles.button9} onPress={() => {navigate('Test')}}>
             <Text style={styles.buttonContent}>Click Here</Text>
         </Button> 
         <Text style={styles.text2}>Not a provider? </Text>
