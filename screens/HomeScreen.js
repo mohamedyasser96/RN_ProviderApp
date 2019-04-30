@@ -16,8 +16,8 @@ export default class loc extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            latitude: 30.10,
-            longitude: 31.0,
+            latitude: 0,
+            longitude: 0,
             error: null,
             dataz: "",
             popup: false,
@@ -33,15 +33,21 @@ export default class loc extends React.Component {
     }
     _togglePopup = () => this.setState({ popup: !this.state.popup });
   async componentDidMount() {
-    let token = await AsyncStorage.getItem("token");
+    if(this.state.latitude != 0){
+      this.interval = setInterval(() => this.saveLoc(), 120000);
+    }
+      let token = await AsyncStorage.getItem("token");
     console.log(token);
-    this.eventSource = new EventSource("http://192.168.1.11:8080/notification", {
+    this.eventSource = new EventSource("http://172.20.10.3:8080/notification", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + token
       }
     });
+    
+    
+
     this.eventSource.addEventListener("message", data => {
       console.log(data.type); // message
       console.log(data.data);
@@ -56,9 +62,37 @@ export default class loc extends React.Component {
     });
   }
 
+  async componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  async cancel(){
+    fetch("http://172.20.10.3:8080/cancelRequest", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      }
+    })
+      .then(response => response.text())
+      .then(responseJson => {
+        // console.log("**************", response)
+        console.log(responseJson)
+        // if (responseJson[0] === 'U')
+        //   this.alert("SORRY", responseJson)
+        // else
+        //   this.alert("ACCEPTED", responseJson)
+        
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
   async accept() {
     let token = await AsyncStorage.getItem("token");
-    fetch("http://192.168.1.11:8080/acceptSeekerRequest", {
+    fetch("http://172.20.10.3:8080/acceptSeekerRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -82,8 +116,20 @@ export default class loc extends React.Component {
   }
 
   async saveLoc() {
+    navigator.geolocation.getCurrentPosition(position => {
+        
+        console.log(position["coords"]["latitude"]);
+        console.log(position["coords"]["longitude"]);
+        this.state.latitude = (position["coords"]["latitude"]);
+        this.state.longitude = (position["coords"]["longitude"]);
+
+        error: null
+
+    }, error => console.log(error),
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
+    );
     let token = await AsyncStorage.getItem("token");
-    fetch("http://192.168.1.11:8080/saveProviderLoc", {
+    fetch("http://172.20.10.3:8080/saveProviderLoc", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -184,12 +230,12 @@ export default class loc extends React.Component {
            }}>
            <Marker coordinate={this.state} />
            <Marker coordinate={this.provs} pinColor='#417df4'/>
-           <Button onPress={ this.saveLoc.bind(this) } title = "Save" />
+           {/* <Button onPress={ this.saveLoc.bind(this) } title = "Save" /> */}
      </MapView>
-     <PostLocation saveLoc={this.saveLoc.bind(this)} />
+     {/* <PostLocation saveLoc={this.saveLoc.bind(this)} /> */}
      
      
-       {/* <Button full success style={styles.button} onPress={this._toggleModal} ><Text style={{color:'#ffffff'}}>REQUEST</Text></Button> */}
+       <Button full success style={styles.button} onPress={this._toggleModal} ><Text style={{color:'#ffffff'}}>REQUEST</Text></Button>
     </View>
 
   )

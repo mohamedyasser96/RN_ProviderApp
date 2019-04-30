@@ -57,17 +57,17 @@ export default class App extends Component {
         allowsEditing: true,
         aspect: [4, 3],
       });
-    
+      
       console.log(result);
     
       if (!result.cancelled) {
-        this.setState({ national_id: result.uri });
+        this.setState({ national_id: result });
       }
     };
 
     async register2(){
      try { 
-      let result = await fetch('http://10.40.62.22:8080/register/provider', {
+      let result = await fetch('http://10.7.126.227:8080/register/provider', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -87,17 +87,46 @@ export default class App extends Component {
   async reg(){
     try{
       const data = new FormData();
-      data.append(this.state.email, this.state.mobileNumber, this.state.password, this.state.username); // you can append anyone.
-      data.append('national_id', {
-      uri: this.national_id.uri,
-      type: 'image/jpeg', // or photo.type
-      name: 'testPhotoName'
-      });
-      fetch('http://10.40.62.22:8080/register/provider', {
+      const myfile = new FormData();
+
+      // const x = {
+      //   part:{
+
+      //   fileItem: {
+      //   'fieldName' : "national_id",
+      //   'contentType': 'image/jpeg',
+      //   'isFormField':false,
+      //   'fileName' : '1.jpeg',
+      //   'size': -1,
+      //   'sizeThreshold': 0,
+      //   //'repository': 
+      //   'cachedContent' : null,
+      //   'path':"/Users/mohamedyasser/Desktop/1.jpeg",
+        
+      //   },
+      // },
+      //   'fileName': '1.jpeg'
+      // }
+
+      data.append("username","myasserrr")
+      data.append("password", "Me11!!")
+      data.append("email", "yasser8@me.com")
+      //data.append("national_id", x)
+      data.append("mobileNumber", "0100000")
+      data.append("expertLevel", "2") // you can append anyone.
+      console.log(data)
+
+
+      fetch('http://10.7.126.227:8080/register/provider', {
       method: 'post',
-      body: data
+      headers: {
+        Accept: 'Application/JSON',
+        'Content-Type': "multipart/form-data"
+      },
+      body: data,
+//      file: x,
       }).then(res => {
-      console.log(res)
+        console.log(res)
       });
     }
     catch (error) {
@@ -119,7 +148,7 @@ export default class App extends Component {
           onPress={this._pickImage}
         />
         {national_id &&
-          <Image source={{ uri: national_id }} style={{ width: 200, height: 200 }} />}
+          <Image source={{ path: national_id.uri }} style={{ width: 200, height: 200 }} />}
       {/* </View> */}
           <TextInput style={styles.textinput} placeholder="Username" placeholderTextColor='#fff' onChangeText={(username) => this.setState({username})}
             value={this.state.username}>
