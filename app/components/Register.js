@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Center } from "@builderx/utils";
-import { Alert, View, StyleSheet, Text, Image, AppRegistry } from "react-native";
+import { Alert, View, StyleSheet, Text, Image, AppRegistry, CameraRoll } from "react-native";
 import { TextInput } from 'react-native-gesture-handler';
 import { Button } from 'native-base';
+import { ImagePicker } from 'expo';
 
 export default class App extends Component {
     static navigationOptions ={
@@ -44,19 +45,33 @@ export default class App extends Component {
                       password: '',
                       email: '',
                       mobileNumber: '',
+                      national_id: null
                     };
   
-     //this.register2 = this.register2.bind(this);
+     this.register2 = this.register2.bind(this);
     }
     
+    _pickImage = async () => {
+      console.log('I am here')
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
     
+      console.log(result);
+    
+      if (!result.cancelled) {
+        this.setState({ national_id: result.uri });
+      }
+    };
+
     async register2(){
      try { 
-      let result = await fetch('http://127.0.0.1:8080/register/provider', {
+      let result = await fetch('http://10.40.62.22:8080/register/provider', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
       body: JSON.stringify(this.state),
       
@@ -69,12 +84,43 @@ export default class App extends Component {
       console.log('aywaaa')
     };
   }
+  async reg(){
+    try{
+      const data = new FormData();
+      data.append(this.state.email, this.state.mobileNumber, this.state.password, this.state.username); // you can append anyone.
+      data.append('national_id', {
+      uri: this.national_id.uri,
+      type: 'image/jpeg', // or photo.type
+      name: 'testPhotoName'
+      });
+      fetch('http://10.40.62.22:8080/register/provider', {
+      method: 'post',
+      body: data
+      }).then(res => {
+      console.log(res)
+      });
+    }
+    catch (error) {
+      console.log(error);
+      console.log('aywaaa')
+    };
+
+  }
   render() {
+    let { national_id } = this.state;
     const {navigate} = this.props.navigation;
     return (
       <View style={styles.root}>
         <View style={styles.rect} />
         <Text style={styles.text}>Register</Text>
+        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}> */}
+        <Button large block
+          title="Pick an image from camera roll"
+          onPress={this._pickImage}
+        />
+        {national_id &&
+          <Image source={{ uri: national_id }} style={{ width: 200, height: 200 }} />}
+      {/* </View> */}
           <TextInput style={styles.textinput} placeholder="Username" placeholderTextColor='#fff' onChangeText={(username) => this.setState({username})}
             value={this.state.username}>
           </TextInput>
@@ -91,8 +137,9 @@ export default class App extends Component {
           <Button9 style={styles.button7} />
           </Center>  */}
           
+          
           <Center horizontal>
-            <Button style={styles.button7} onPress={() => {this.register2()}}>
+            <Button style={styles.button7} onPress={() => {this.reg()}}>
                 <Text style={styles.bcont2}>Register</Text>
             </Button>
         </Center>
@@ -101,6 +148,8 @@ export default class App extends Component {
     );
   }
 }
+
+
 const styles = StyleSheet.create({
   root: {
     backgroundColor: "white",
@@ -117,7 +166,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     position: "absolute",
-    backgroundColor: "rgba(29,72,125,1)",
+    backgroundColor: "brown",
     opacity: 1
   },
   button7: {

@@ -1,25 +1,37 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { ExpoLinksView } from '@expo/samples';
+import { Button, Image, View, CameraRoll } from 'react-native';
+import { ImagePicker } from 'expo';
 
-export default class LinksScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Past Requests',
+export default class ImagePickerExample extends React.Component {
+  state = {
+    image: null,
   };
 
   render() {
-    return (
-      <ScrollView style={styles.container}>
+    let { image } = this.state;
 
-      </ScrollView>
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+          title="Pick an image from camera roll"
+          onPress={this._pickImage}
+        />
+        {image &&
+          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      </View>
     );
   }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 15,
-    backgroundColor: '#fff',
-  },
-});
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+    }
+  };
+}

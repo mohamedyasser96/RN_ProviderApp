@@ -65,7 +65,7 @@ export default class App extends Component {
       async register2()
       {
         try { 
-         let result = await fetch('http://127.0.0.1:8080/login/provider', {
+         let result = await fetch('http://192.168.43.99:8080/login/provider', {
          method: 'POST',
          headers: {
            Accept: 'application/json',
@@ -110,7 +110,7 @@ export default class App extends Component {
             <Text style={styles.bcont2}>Login</Text>
           </Button>
         </Center>
-        <Button style={styles.button9} onPress={() => {navigate('Test')}}>
+        <Button style={styles.button9} onPress={() => {navigate('Second')}}>
             <Text style={styles.buttonContent}>Click Here</Text>
         </Button> 
         <Text style={styles.text2}>Not a provider? </Text>
