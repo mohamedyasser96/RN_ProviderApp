@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage, Alert } from 'react-native';
 import MapView, { Marker } from "react-native-maps";
 import Modal from "react-native-modal"
 
@@ -33,12 +33,12 @@ export default class loc extends React.Component {
     }
     _togglePopup = () => this.setState({ popup: !this.state.popup });
   async componentDidMount() {
-    if(this.state.latitude != 0){
-      this.interval = setInterval(() => this.saveLoc(), 120000);
-    }
+    // if(this.state.latitude != 0){
+      this.interval = setInterval(() => this.saveLoc(), 10000);
+    //}
       let token = await AsyncStorage.getItem("token");
     console.log(token);
-    this.eventSource = new EventSource("http://172.20.10.3:8080/notification", {
+    this.eventSource = new EventSource("http://10.40.32.62:8080/notification", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -67,7 +67,8 @@ export default class loc extends React.Component {
   }
 
   async cancel(){
-    fetch("http://172.20.10.3:8080/cancelRequest", {
+    let token = await AsyncStorage.getItem("token");
+    fetch("http://10.40.32.62:8080/cancelRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -92,7 +93,7 @@ export default class loc extends React.Component {
 
   async accept() {
     let token = await AsyncStorage.getItem("token");
-    fetch("http://172.20.10.3:8080/acceptSeekerRequest", {
+    fetch("http://10.40.32.62:8080/acceptSeekerRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -129,7 +130,7 @@ export default class loc extends React.Component {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
     );
     let token = await AsyncStorage.getItem("token");
-    fetch("http://172.20.10.3:8080/saveProviderLoc", {
+    fetch("http://10.40.32.62:8080/saveProviderLoc", {
       method: "POST",
       headers: {
         Accept: "application/json",

@@ -65,7 +65,7 @@ export default class App extends Component {
       async register2()
       {
         try { 
-         let result = await fetch('http://10.7.126.227:8080/login/provider', {
+         let result = await fetch('http://10.40.32.62:8080/login/provider', {
          method: 'POST',
          headers: {
            Accept: 'application/json',
@@ -73,7 +73,7 @@ export default class App extends Component {
          },
          body: JSON.stringify(this.state),
        });
-       
+       console.log("gghygfy", result)
        body = JSON.parse(result._bodyInit)
        console.log(body.Status)
        
