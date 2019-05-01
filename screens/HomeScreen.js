@@ -38,7 +38,7 @@ export default class loc extends React.Component {
     //}
       let token = await AsyncStorage.getItem("token");
     console.log(token);
-    this.eventSource = new EventSource("http://10.40.32.62:8080/notification", {
+    this.eventSource = new EventSource("http://172.20.10.9:8080/notification", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -66,34 +66,9 @@ export default class loc extends React.Component {
     clearInterval(this.interval);
   }
 
-  async cancel(){
-    let token = await AsyncStorage.getItem("token");
-    fetch("http://10.40.32.62:8080/cancelRequest", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token
-      }
-    })
-      .then(response => response.text())
-      .then(responseJson => {
-        // console.log("**************", response)
-        console.log(responseJson)
-        // if (responseJson[0] === 'U')
-        //   this.alert("SORRY", responseJson)
-        // else
-        //   this.alert("ACCEPTED", responseJson)
-        
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
   async accept() {
     let token = await AsyncStorage.getItem("token");
-    fetch("http://10.40.32.62:8080/acceptSeekerRequest", {
+    fetch("http://172.20.10.9:8080/acceptSeekerRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -114,6 +89,91 @@ export default class loc extends React.Component {
       .catch(error => {
         console.error(error);
       });
+
+    this.eventSource = new EventSource("http://172.20.10.9:8080/notifyProvider", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      }
+    });
+    
+    
+
+    this.eventSource.addEventListener("message", data => {
+      console.log(data.type); // message
+      console.log(data.data);
+      this.setState({
+        dataz: data.data
+      });
+
+      if (this.state.k === 1) {
+        this._togglePopup();
+        this.setState({ k: 2 });
+      }
+
+      Alert.alert(
+        "CONGRATS",
+        "YOUR SERVICE HAS BEEN CHOSEN",
+        [
+          {
+            text: "OK",
+            onPress: () => console.log("OK Pressed"),
+            style: "cancel"
+          },
+          { text: "CANCEL", onPress: () => this.cancelRequest() },
+          { text: "END", onPress: () => this.endRequest() }
+        ],
+        { cancelable: false }
+      );
+    });
+  }
+
+  async cancelRequest() {
+    let token = await AsyncStorage.getItem("token");
+    fetch("http://172.20.10.9:8080/cancelRequest", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      }
+    })
+      .then(response => response.text())
+      .then(responseJson => {
+        // console.log("**************", response)
+        console.log(responseJson)
+        this.alert("SUCCESS", responseJson)
+        
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  async endRequest() {
+    const x = {
+      "fees" : "100"
+    }
+    let token = await AsyncStorage.getItem("token");
+    fetch("http://172.20.10.9:8080/endRequest", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body : JSON.stringify(x),
+    })
+      .then(response => response.text())
+      .then(responseJson => {
+        // console.log("**************", response)
+        console.log(responseJson)
+        this.alert("SUCCESS", responseJson)
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   async saveLoc() {
@@ -130,7 +190,7 @@ export default class loc extends React.Component {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
     );
     let token = await AsyncStorage.getItem("token");
-    fetch("http://10.40.32.62:8080/saveProviderLoc", {
+    fetch("http://172.20.10.9:8080/saveProviderLoc", {
       method: "POST",
       headers: {
         Accept: "application/json",
