@@ -55,6 +55,7 @@ export default class App extends Component {
         try{
         //console.log("Ana fl try")
         await AsyncStorage.setItem('token', token)
+        await AsyncStorage.setItem('email', this.state.email)
         this.props.navigation.navigate("Main")
         
       }
@@ -65,7 +66,7 @@ export default class App extends Component {
       async register2()
       {
         try { 
-         let result = await fetch('http://172.20.10.9:8080/login/provider', {
+         let result = await fetch('http://10.7.126.186:8080/login/provider', {
          method: 'POST',
          headers: {
            Accept: 'application/json',
