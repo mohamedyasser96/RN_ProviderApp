@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, AsyncStorage, Alert } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage, Alert, TextInput, ScrollView } from 'react-native';
 import MapView, { Marker } from "react-native-maps";
 import Modal from "react-native-modal"
 
@@ -56,7 +56,7 @@ export default class loc extends React.Component {
       stompClient = Stomp.over(socket);  
 
       let email =  await AsyncStorage.getItem('email');
-      topic = email + "_" + emails;
+      topic = emails + "_" + email;
         
       stompClient.connect({}, function(frame) {
       
@@ -118,10 +118,8 @@ export default class loc extends React.Component {
         this.setState({ OnReuqest: !this.state.OnReuqest})
 
 
-
-
-
     _togglePopup = () => this.setState({ popup: !this.state.popup });
+    
   async componentDidMount() {
     // if(this.state.latitude != 0){
       this.interval = setInterval(() => this.saveLoc(), 10000);
@@ -188,7 +186,7 @@ export default class loc extends React.Component {
           this.alert("SORRY", responseJson)
         else{
           this.alert("ACCEPTED", responseJson)
-          this.OnReuqest()
+          //this.toggleRequestPage()
         }
         
       })
@@ -209,6 +207,8 @@ export default class loc extends React.Component {
     this.eventSource.addEventListener("message", data => {
       console.log(data.type); // message
       console.log(data.data);
+      this.toggleRequestPage()
+      this.on_connect('am@email.com')
       this.setState({
         dataz: data.data
       });
@@ -335,7 +335,7 @@ export default class loc extends React.Component {
    
   
    render() {
-    console.log(this.state.popup);
+    //console.log(this.state.popup);
     const {navigate} = this.props.navigation;
     if(!this.state.screenFlag && !this.state.OnReuqest)
      return (
@@ -443,7 +443,7 @@ else{
     paddingBottom: 10,
     //backgroundColor: '#1990e5',
     marginTop: 30,
-    top: "95%",
+    top: "80%",
     //left: 148.53
   },
   btntext:{

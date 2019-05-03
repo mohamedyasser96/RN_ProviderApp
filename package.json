@@ -14,6 +14,7 @@
     "axios": "^0.18.0",
     "expo": "^32.0.0",
     "native-base": "^2.12.1",
+    "net": "^1.0.2",
     "prop-types": "^15.7.2",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
@@ -31,6 +32,8 @@
     "react-native-popup-dialog": "^0.18.2",
     "react-native-vector-icons": "^6.4.1",
     "react-navigation": "^3.4.1",
+    "sockjs-client": "^1.3.0",
+    "stompjs": "^2.3.3",
     "util": "*"
   },
   "devDependencies": {
