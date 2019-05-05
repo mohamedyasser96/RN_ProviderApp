@@ -52,7 +52,7 @@ export default class loc extends React.Component {
 
     async on_connect(emails){
 
-      var socket = new SockJS('http://10.7.126.186:8080/chat');
+      var socket = new SockJS('http://cocoabeans.herokuapp.com/chat');
       stompClient = Stomp.over(socket);  
 
       let email =  await AsyncStorage.getItem('email');
@@ -126,7 +126,7 @@ export default class loc extends React.Component {
     //}
       let token = await AsyncStorage.getItem("token");
     console.log(token);
-    this.eventSource = new EventSource("http://10.7.126.186:8080/notification", {
+    this.eventSource = new EventSource("http://cocoabeans.herokuapp.com/notification", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -170,7 +170,7 @@ export default class loc extends React.Component {
 
   async accept() {
     let token = await AsyncStorage.getItem("token");
-    fetch("http://10.7.126.186:8080/acceptSeekerRequest", {
+    fetch("http://cocoabeans.herokuapp.com/acceptSeekerRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -194,7 +194,7 @@ export default class loc extends React.Component {
         console.error(error);
       });
 
-    this.eventSource = new EventSource("http://10.7.126.186:8080/notifyProvider", {
+    this.eventSource = new EventSource("http://cocoabeans.herokuapp.com/notifyProvider", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -232,7 +232,7 @@ export default class loc extends React.Component {
 
   async cancelRequest() {
     let token = await AsyncStorage.getItem("token");
-    fetch("http://10.7.126.186:8080/cancelRequest", {
+    fetch("http://cocoabeans.herokuapp.com/cancelRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -257,7 +257,7 @@ export default class loc extends React.Component {
       "fees" : "100"
     }
     let token = await AsyncStorage.getItem("token");
-    fetch("http://10.7.126.186:8080/endRequest", {
+    fetch("http://cocoabeans.herokuapp.com/endRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -291,7 +291,7 @@ export default class loc extends React.Component {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
     );
     let token = await AsyncStorage.getItem("token");
-    fetch("http://10.7.126.186:8080/saveProviderLoc", {
+    fetch("http://cocoabeans.herokuapp.com/saveProviderLoc", {
       method: "POST",
       headers: {
         Accept: "application/json",

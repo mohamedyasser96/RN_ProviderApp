@@ -67,7 +67,7 @@ export default class App extends Component {
 
     async register2(){
      try { 
-      let result = await fetch('http://10.7.126.227:8080/register/provider', {
+      let result = await fetch('http://cocoabeans.herokuapp.com/register/provider', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -117,7 +117,7 @@ export default class App extends Component {
       console.log(data)
 
 
-      fetch('http://10.7.126.227:8080/register/provider', {
+      fetch('http://cocoabeans.herokuapp.com/register/provider', {
       method: 'post',
       headers: {
         Accept: 'Application/JSON',

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Center } from "@builderx/utils";
 import Button7 from "../symbols/button7";
 import Button9 from "../symbols/button9";
-import { Alert, View, StyleSheet, Text, Image, AppRegistry, AsyncStorage} from "react-native";
+import { Alert, View, StyleSheet, Text, Image, AppRegistry, AsyncStorage, KeyboardAvoidingView} from "react-native";
 import { Button } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -66,7 +66,7 @@ export default class App extends Component {
       async register2()
       {
         try { 
-         let result = await fetch('http://10.7.126.186:8080/login/provider', {
+         let result = await fetch('http://cocoabeans.herokuapp.com/login/provider', {
          method: 'POST',
          headers: {
            Accept: 'application/json',
@@ -92,12 +92,11 @@ export default class App extends Component {
   render() {
     const {navigate} = this.props.navigation;
     return (
-      <View style={styles.root}>
-        <View style={styles.rect} />
-        <Text style={styles.text}>CocoaBeans</Text>
-        <Center horizontal>
-          <Image source={require("./3.png")} style={styles.image} />
-        </Center>
+      <KeyboardAvoidingView style={styles.root} behavior="padding" enabled>
+      <View style={styles.rect} />
+        {/* <Center horizontal> */}
+          {/* <Image source={require("./3.png")} style={styles.image} /> */}
+        {/* </Center> */}
         {/* <Center horizontal> */}
           <TextInput style={styles.input} placeholder="Email" placeholderTextColor='#fff' onChangeText={(email) => this.setState({email})}
             value={this.state.email}>
@@ -115,7 +114,7 @@ export default class App extends Component {
             <Text style={styles.buttonContent}>Click Here</Text>
         </Button> 
         <Text style={styles.text2}>Not a provider? </Text>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -125,8 +124,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   rect: {
-    height: 649.74,
-    width: 375,
+    height: '80%',
+    width: '100%',
     top: 0,
     left: 0,
     position: "absolute",
