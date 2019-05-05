@@ -353,7 +353,7 @@ export default class loc extends React.Component {
               <Marker coordinate={this.provs} pinColor='#417df4'/>
               {/* <Button onPress={ this.saveLoc.bind(this) } title = "Save" /> */}
         </MapView>
-        <PostLocation saveLoc={this.saveLoc.bind(this)} />
+        {/* <PostLocation saveLoc={this.saveLoc.bind(this)} /> */}
         
         
           {/* <Button full success style={styles.button} onPress={this._toggleModal} ><Text style={{color:'#ffffff'}}>REQUEST</Text></Button> */}
