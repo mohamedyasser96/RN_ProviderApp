@@ -35,6 +35,9 @@ export default class loc extends React.Component {
             item : [],
             mess: '', 
             OnReuqest: false,
+            requestID: '',
+            base64Image: '',
+
 
 
         };
@@ -69,11 +72,19 @@ export default class loc extends React.Component {
           console.log('Message Received')
   
           var obj = JSON.parse(messageOutput.body)
+          var dict = {"from": obj.from, "imageFlag": false, "message":obj.message}
           items.splice(0, 0, obj.from +": "+obj.message);
         });
   
         stompClient.subscribe('/user/topic/images', function(messageOutput) {
           console.log('Image Received:');
+
+          var obj = JSON.parse(messageOutput.body)
+
+          var dict = {"from": obj.from, "imageFlag": true, "message":obj.message}
+  
+          items.splice(0,0,dict);
+
         });
 
         stompClient.subscribe('/user/topic/location', function(messageOutput) {
@@ -143,10 +154,7 @@ export default class loc extends React.Component {
         "Alert Title",
         "My Alert Msg",
         [
-          {
-            text: "Ask me later",
-            onPress: () => console.log("Ask me later pressed")
-          },
+          
           {
             text: "Cancel",
             onPress: () => console.log("Cancel Pressed"),
@@ -395,20 +403,40 @@ else{
           onChangeText={(text) => this.setState({mess:text})}
                 />
 
-        <Button full success style={styles.button} onPress={() => {this.sendMessage()}} ><Text style={{color:'#ffffff'}}>Send Message</Text></Button>
-        <Button full success style={styles.button} onPress = {() => {this.change()}}><Text>Chat </Text></Button>
-
-
         <ScrollView>
-          { 
-            this.state.item.map((item,key) =>
-            (
-                <View key = {key} style = {styles.item}>
-                  <Text style = {styles.text2}> {item} </Text>
-                </View>
-            ))
-          }
+                  { 
+                    this.state.item.map((item,key) =>
+                    (
+                        <View key = {key} style = {styles.item}>
+                        { 
+                            item.imageFlag ? (
+                            <Image source={{ uri: `data:image/jpg;base64,${item.message}` }} style={{ width: 200, height: 200 }} />
+                        ) : (
+                            <Text style = {styles.text}> {item.message} </Text>
+                            )}
+                        </View>
+                    ))
+                  }
         </ScrollView>
+
+        <Button full success style={styles.button2} onPress={() => {this.sendMessage()}} ><Text style={{color:'#ffffff'}}>Send Message</Text></Button>
+        <Button full success style={styles.button2} onPress = {() => {this.change()}}><Text>Back </Text></Button>
+        <Button
+              onPress={this.sendImage}
+              title="Send Image"
+              style={styles.button2}
+              accessibilityLabel="Learn more about this purple button"
+              />
+
+            <Button
+              onPress={this.pickImage}
+              title="Pick Image"
+              style = {{marginTop:50}}
+              color="blue"
+              accessibilityLabel="Learn more about this purple button"
+            />
+
+        
       </View>
     );
    }
@@ -444,6 +472,18 @@ else{
     //backgroundColor: '#1990e5',
     marginTop: 30,
     top: "80%",
+    //left: 148.53
+  },
+  button2:{
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    padding: 10,
+    paddingBottom: 10,
+    position: 'absolute', //Here is the trick
+    bottom: 0,
+    //backgroundColor: '#1990e5',
+    //marginTop: 30,
+    //top: "80%",
     //left: 148.53
   },
   btntext:{
