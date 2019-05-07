@@ -4,6 +4,7 @@ import { Alert, View, StyleSheet, Text, Image, AppRegistry, CameraRoll } from "r
 import { TextInput } from 'react-native-gesture-handler';
 import { Button } from 'native-base';
 import { ImagePicker } from 'expo';
+// import RNFetchBlob from 'react-native-fetch-blob'
 
 export default class App extends Component {
     static navigationOptions ={
@@ -65,7 +66,25 @@ export default class App extends Component {
       }
     };
 
+  //   getPhotos = () => {
+  //   CameraRoll.getPhotos({
+  //     first: 20,
+  //     assetType: 'All'
+  //   })
+  //   .then(r => this.setState({ photos: r.edges }))
+  // }
+
     async register2(){
+      let form = new FormData()
+      let img = new FormData()
+      form.append("username", this.state.username)
+      form.append("password", this.state.password)
+      form.append("email", this.state.email)
+      form.append("mobileNumber", this.state.mobileNumber)
+      form.append("file", this.state.national_id)
+      console.log("#############")
+      console.log(Object.keys(this.state.national_id))
+      console.log("#############")
      try { 
       let result = await fetch('http://10.40.59.113:5000/register/provider', {
       method: 'POST',
@@ -73,9 +92,8 @@ export default class App extends Component {
         Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
       },
-      body: JSON.stringify(this.state),
-      
-      
+      body: form,
+      file: this.state.national_id
     });
     console.log(result);
     this.checkStatus(result.status, result._bodyInit)
@@ -87,44 +105,26 @@ export default class App extends Component {
   async reg(){
     try{
       const data = new FormData();
-      const myfile = new FormData();
-
-      // const x = {
-      //   part:{
-
-      //   fileItem: {
-      //   'fieldName' : "national_id",
-      //   'contentType': 'image/jpeg',
-      //   'isFormField':false,
-      //   'fileName' : '1.jpeg',
-      //   'size': -1,
-      //   'sizeThreshold': 0,
-      //   //'repository': 
-      //   'cachedContent' : null,
-      //   'path':"/Users/mohamedyasser/Desktop/1.jpeg",
-        
-      //   },
-      // },
-      //   'fileName': '1.jpeg'
-      // }
-
-      data.append("username","myasserrr")
-      data.append("password", "Me11!!")
-      data.append("email", "yasser8@me.com")
+      data.append("username",this.state.username)
+      data.append("password", this.state.password)
+      data.append("email", this.state.email)
       //data.append("national_id", x)
-      data.append("mobileNumber", "0100000")
+      data.append("mobileNumber", this.state.mobileNumber)
       data.append("expertLevel", "2") // you can append anyone.
-      console.log(data)
-
+      data.append('national_id', {
+                                        uri: this.state.national_id.uri,
+                                        type: this.state.national_id.type, // or photo.type
+                                        name: 'national_id'
+      })
+      // console.log(data)
 
       fetch('http://10.40.59.113:5000/register/provider', {
       method: 'post',
       headers: {
-        Accept: 'Application/JSON',
-        'Content-Type': "multipart/form-data"
+        Accept: 'application/json',
+        'Content-Type': "*/*"
       },
       body: data,
-//      file: x,
       }).then(res => {
         console.log(res)
       });

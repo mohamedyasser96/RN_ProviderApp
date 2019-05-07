@@ -163,7 +163,7 @@ export default class loc extends React.Component {
     //}
       let token = await AsyncStorage.getItem("token");
     console.log(token);
-    this.eventSource = new EventSource("http://10.40.59.113:5000/notification", {
+    this.eventSource1 = await new EventSource("http://10.40.59.113:5000/notification", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -173,7 +173,7 @@ export default class loc extends React.Component {
     
     
 
-    await this.eventSource.addEventListener("message", data => {
+    await this.eventSource1.addEventListener("message", data => {
       console.log(data.type); // message
       console.log(data.data);
       let req_id = data.data.slice(1)
@@ -196,18 +196,25 @@ export default class loc extends React.Component {
         dataz: data.data
       });
 
+    // this.eventSource.removeAllListeners();
+    this.eventSource1.close();
       
     });
+
   }
 
   async componentWillUnmount() {
+    await this.eventSource1.removeAllListeners();
+    await this.eventSource1.close()
+    await this.eventSource2.removeAllListeners();
+    await this.eventSource2.close();
     clearInterval(this.interval);
   }
 
   async accept() {
     let token = await AsyncStorage.getItem("token");
     let reqID = await AsyncStorage.getItem("request_id")
-    fetch("http://10.40.59.113:5000/acceptSeekerRequest", {
+    await fetch("http://10.40.59.113:5000/acceptSeekerRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -234,7 +241,7 @@ export default class loc extends React.Component {
         console.error(error);
       });
 
-    this.eventSource = new EventSource("http://10.40.59.113:5000/notifyProvider", {
+    this.eventSource2 = await new EventSource("http://10.40.59.113:5000/notifyProvider", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -244,11 +251,11 @@ export default class loc extends React.Component {
     
     
 
-    await this.eventSource.addEventListener("message", data => {
+    await this.eventSource2.addEventListener("message", data => {
       console.log(data.type); // message
       console.log(data.data);
       this.toggleRequestPage()
-      this.on_connect('Asser90@me.com')
+      this.on_connect('minawi2@gmail.com')
       this.setState({
         dataz: data.data
       });
@@ -267,13 +274,16 @@ export default class loc extends React.Component {
         ],
         { cancelable: false }
       );
+    // this.eventSource.removeAllListeners();
+    this.eventSource2.close();
     });
+
   }
 
   async cancelRequest() {
     let token = await AsyncStorage.getItem("token");
     let reqID = await AsyncStorage.getItem("request_id")
-    fetch("http://10.40.59.113:5000/cancelRequest", {
+    await fetch("http://10.40.59.113:5000/cancelRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -302,7 +312,7 @@ export default class loc extends React.Component {
     }
     let token = await AsyncStorage.getItem("token");
     let reqID = await AsyncStorage.getItem("request_id")
-    fetch("http://10.40.59.113:5000/endRequest", {
+    await fetch("http://10.40.59.113:5000/endRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -339,7 +349,7 @@ export default class loc extends React.Component {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
     );
     let token = await AsyncStorage.getItem("token");
-    fetch("http://10.40.59.113:5000/saveProviderLoc", {
+    await fetch("http://10.40.59.113:5000/saveProviderLoc", {
       method: "POST",
       headers: {
         Accept: "application/json",
