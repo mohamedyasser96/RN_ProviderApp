@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, AsyncStorage, Alert, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage, Alert, TextInput, ScrollView, Image, Dimensions } from 'react-native';
 import MapView, { Marker } from "react-native-maps";
-import Modal from "react-native-modal"
+import Modal from "react-native-modal";
+import {ImagePicker, Permissions} from 'expo';
 
 import EventSource from 'react-native-event-source';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
@@ -17,6 +18,8 @@ var img = null;
 var sesid = null;
 var items = [];
 var topic = null;
+const screenWidth = Math.round(Dimensions.get('window').width)
+const screenHeight = Math.round(Dimensions.get('window').height)
 
 export default class loc extends React.Component {
  
@@ -37,6 +40,7 @@ export default class loc extends React.Component {
             OnReuqest: false,
             requestID: '',
             base64Image: '',
+            topic: '',
 
 
 
@@ -52,15 +56,37 @@ export default class loc extends React.Component {
         //this.getUserLocation = this.getUserLocation.bind(this);
     }
 
+    
+    pickImage = async () => {
+      const options = {
+        base64:true,
+        quality: 1.0,
+        aspect: [4, 3]
+      };
+
+      let result = await ImagePicker.launchImageLibraryAsync(options);
+
+      if(!result.cancelled)
+        this.setState({base64Image: result.base64});
+    }
+
+    sendImage = () => {
+      var from = this.state.email
+      var text = this.state.base64
+      var topic = this.state.topic
+
+      stompClient.send("/app/chat/images/"+topic, {}, JSON.stringify({'from':from, 'text':text}));
+    }
 
     async on_connect(emails){
 
-      var socket = new SockJS('http://cocoabeans.herokuapp.com/chat');
+      var socket = new SockJS('http://10.40.59.113:5000/chat');
       stompClient = Stomp.over(socket);  
 
       let email =  await AsyncStorage.getItem('email');
       topic = emails + "_" + email;
-        
+      this.state.topic = topic
+
       stompClient.connect({}, function(frame) {
       
         var urlarray = socket._transport.url.split('/');
@@ -73,7 +99,7 @@ export default class loc extends React.Component {
   
           var obj = JSON.parse(messageOutput.body)
           var dict = {"from": obj.from, "imageFlag": false, "message":obj.message}
-          items.splice(0, 0, obj.from +": "+obj.message);
+          items.splice(0,0,dict);
         });
   
         stompClient.subscribe('/user/topic/images', function(messageOutput) {
@@ -137,7 +163,7 @@ export default class loc extends React.Component {
     //}
       let token = await AsyncStorage.getItem("token");
     console.log(token);
-    this.eventSource = new EventSource("http://cocoabeans.herokuapp.com/notification", {
+    this.eventSource = new EventSource("http://10.40.59.113:5000/notification", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -147,12 +173,14 @@ export default class loc extends React.Component {
     
     
 
-    this.eventSource.addEventListener("message", data => {
+    await this.eventSource.addEventListener("message", data => {
       console.log(data.type); // message
       console.log(data.data);
+      let req_id = data.data.slice(1)
+      AsyncStorage.setItem("request_id", req_id)
       Alert.alert(
-        "Alert Title",
-        "My Alert Msg",
+        "Request Available",
+        "Request ID: " + req_id,
         [
           
           {
@@ -178,13 +206,17 @@ export default class loc extends React.Component {
 
   async accept() {
     let token = await AsyncStorage.getItem("token");
-    fetch("http://cocoabeans.herokuapp.com/acceptSeekerRequest", {
+    let reqID = await AsyncStorage.getItem("request_id")
+    fetch("http://10.40.59.113:5000/acceptSeekerRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + token
-      }
+      },
+      body: JSON.stringify({
+        request_id : reqID
+      })
     })
       .then(response => response.text())
       .then(responseJson => {
@@ -202,7 +234,7 @@ export default class loc extends React.Component {
         console.error(error);
       });
 
-    this.eventSource = new EventSource("http://cocoabeans.herokuapp.com/notifyProvider", {
+    this.eventSource = new EventSource("http://10.40.59.113:5000/notifyProvider", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -212,11 +244,11 @@ export default class loc extends React.Component {
     
     
 
-    this.eventSource.addEventListener("message", data => {
+    await this.eventSource.addEventListener("message", data => {
       console.log(data.type); // message
       console.log(data.data);
       this.toggleRequestPage()
-      this.on_connect('am@email.com')
+      this.on_connect('Asser90@me.com')
       this.setState({
         dataz: data.data
       });
@@ -240,13 +272,17 @@ export default class loc extends React.Component {
 
   async cancelRequest() {
     let token = await AsyncStorage.getItem("token");
-    fetch("http://cocoabeans.herokuapp.com/cancelRequest", {
+    let reqID = await AsyncStorage.getItem("request_id")
+    fetch("http://10.40.59.113:5000/cancelRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + token
-      }
+      },
+      body: JSON.stringify({
+        request_id : reqID
+      })
     })
       .then(response => response.text())
       .then(responseJson => {
@@ -265,14 +301,18 @@ export default class loc extends React.Component {
       "fees" : "100"
     }
     let token = await AsyncStorage.getItem("token");
-    fetch("http://cocoabeans.herokuapp.com/endRequest", {
+    let reqID = await AsyncStorage.getItem("request_id")
+    fetch("http://10.40.59.113:5000/endRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: "Bearer " + token
       },
-      body : JSON.stringify(x),
+      body : JSON.stringify({
+        fees : 100,
+        request_id : reqID
+      })
     })
       .then(response => response.text())
       .then(responseJson => {
@@ -299,7 +339,7 @@ export default class loc extends React.Component {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
     );
     let token = await AsyncStorage.getItem("token");
-    fetch("http://cocoabeans.herokuapp.com/saveProviderLoc", {
+    fetch("http://10.40.59.113:5000/saveProviderLoc", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -307,8 +347,8 @@ export default class loc extends React.Component {
         Authorization: "Bearer " + token
       },
       body: JSON.stringify({
-        lat: this.state.latitude,
-        lon: this.state.longitude
+        lat: 30.0,
+        lon: 30.0
       })
     }).catch(error => {
         console.error(error);
@@ -394,51 +434,84 @@ export default class loc extends React.Component {
 );
 else{
     return (
-      <View style={styles.container2}>
-
-        <TextInput
-          style={[styles.default, {height: Math.max(35, this.state.height)}]}
-          placeholder="Message"
-          value={this.state.mess}
-          onChangeText={(text) => this.setState({mess:text})}
-                />
-
-        <ScrollView>
+        <View>
+          <ScrollView style={{position: 'absolute',
+            top: 10,
+            width: '100%',
+            height: '70%',}}>
+            { 
+              this.state.item.map((item,key) =>
+              (
+                  <View key = {key} style = {styles.item}>
                   { 
-                    this.state.item.map((item,key) =>
-                    (
-                        <View key = {key} style = {styles.item}>
-                        { 
-                            item.imageFlag ? (
-                            <Image source={{ uri: `data:image/jpg;base64,${item.message}` }} style={{ width: 200, height: 200 }} />
-                        ) : (
-                            <Text style = {styles.text}> {item.message} </Text>
-                            )}
-                        </View>
-                    ))
-                  }
-        </ScrollView>
+                      item.imageFlag ? (
+                       <Image source={{ uri: `data:image/jpg;base64,${item.message}` }} style={{ width: 200, height: 200 }} />
+                  ) : (
+                      <Text style = {styles.text}> {item.from + " : " + item.message} </Text>
+                      )}
+                  </View>
+              ))
+            }
+          </ScrollView>
+          <TextInput
+                style={[styles.default, {marginTop:screenHeight*0.65 ,height: Math.max(35, this.state.height)}]}
+                placeholder="Message"
+                value={this.state.mess}
+                onChangeText={(text) => this.setState({mess:text})}
+                  />
+  
+          <View  style={{
+                  flex: 1,
+                  marginTop:screenHeight*0.1,
+                  backgroundColor: 'transparent',
+                  flexDirection: 'row',
+                }} >
+  
+            <Button rounded style={{
+                    alignSelf: 'flex-end',
+                    alignItems: 'center',
+                    marginLeft:screenWidth*0.08
+                  }}
+                  onPress={this.sendMessage}
+  
+                  >
+              <Text>  Send Message   </Text>
+            </Button>
+  
+            <Button full rounded success style={{
+                    alignSelf: 'flex-end',
+                    alignItems: 'center',
+                    marginLeft:screenWidth*0.05
+                  }}
+                  onPress={this.sendImage}
+                  >
+              <Text>   Send Image   </Text>
+            </Button>
+  
+            <Button full rounded danger style={{
+                    alignSelf: 'flex-end',
+                    alignItems: 'center',
+                    marginLeft:screenWidth*0.05
+                  }}
+                  onPress={this.pickImage}
+                  >
+              <Text>   Attach   </Text>
+            </Button>
 
-        <Button full success style={styles.button2} onPress={() => {this.sendMessage()}} ><Text style={{color:'#ffffff'}}>Send Message</Text></Button>
-        <Button full success style={styles.button2} onPress = {() => {this.change()}}><Text>Back </Text></Button>
-        <Button
-              onPress={this.sendImage}
-              title="Send Image"
-              style={styles.button2}
-              accessibilityLabel="Learn more about this purple button"
-              />
-
-            <Button
-              onPress={this.pickImage}
-              title="Pick Image"
-              style = {{marginTop:50}}
-              color="blue"
-              accessibilityLabel="Learn more about this purple button"
-            />
-
-        
-      </View>
-    );
+            <Button full rounded danger style={{
+                    alignSelf: 'flex-end',
+                    alignItems: 'center',
+                    //marginLeft:screenWidth*0.05
+                  }}
+                  onPress={() => {this.change()}}
+                  >
+              <Text>   `back`   </Text>
+            </Button>
+  
+  
+          </View>
+        </View>
+      );
    }
 
 }
@@ -454,6 +527,9 @@ else{
      alignItems: 'center',
      justifyContent: 'center',
    },
+   item: {
+     backgroundColor: 'white'
+   },
    map: {
     ...StyleSheet.absoluteFillObject,
     height: 630,
@@ -461,7 +537,9 @@ else{
   text:{
     top: "30%",
     fontWeight: "bold",
-    color: "#ffffff"
+    color: "black",
+    fontSize: 14,
+    paddingBottom: 10
   },
 
   button:{

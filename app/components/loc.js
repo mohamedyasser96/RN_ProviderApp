@@ -71,7 +71,7 @@ export default class loc extends React.Component {
         try { 
         // console.log('BHEGDIWDUIOHWOJWD', this._retrieveData()._55)
         let token = await AsyncStorage.getItem('token')
-        let result = await fetch('http://172.20.10.9:8080/findProviders', {
+        let result = await fetch('http://10.40.59.113:8080/findProviders', {
          method: 'POST',
          withCredentials: true,
          headers: {
