@@ -18,7 +18,7 @@ var img = null;
 var sesid = null;
 var items = [];
 var topic = null;
-const screenWidth = Math.round(Dimensions.get('window').width)
+const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height)
 
 export default class loc extends React.Component {
@@ -160,7 +160,7 @@ export default class loc extends React.Component {
     
   async componentDidMount() {
     // if(this.state.latitude != 0){
-      this.interval = setInterval(() => this.saveLoc(), 10000);
+      
     //}
       let token = await AsyncStorage.getItem("token");
     console.log(token);
@@ -179,6 +179,7 @@ export default class loc extends React.Component {
       console.log(data.data);
       let req_id = data.data.slice(1)
       AsyncStorage.setItem("request_id", req_id)
+      console.log(Object.keys(req_id))
       Alert.alert(
         "Request Available",
         "Request ID: " + req_id,
@@ -201,6 +202,23 @@ export default class loc extends React.Component {
     this.eventSource1.close();
       
     });
+
+
+
+    navigator.geolocation.getCurrentPosition(position => {
+        
+      // console.log(position["coords"]["latitude"]);
+      // console.log(position["coords"]["longitude"]);
+      this.state.latitude = (position["coords"]["latitude"]);
+      this.state.longitude = (position["coords"]["longitude"]);
+
+      error: null
+
+    }, error => console.log(error),
+    { enableHighAccuracy: true, timeout:10000, maximumAge: 2000}
+    );
+
+    this.interval = setInterval(() => this.saveLoc(), 8000);
 
   }
 
@@ -270,9 +288,9 @@ export default class loc extends React.Component {
             text: "OK",
             onPress: () => console.log("OK Pressed"),
             style: "cancel"
-          },
-          { text: "CANCEL", onPress: () => this.cancelRequest() },
-          { text: "END", onPress: () => this.endRequest() }
+          }
+          // { text: "CANCEL", onPress: () => this.cancelRequest() },
+          // { text: "END", onPress: () => this.endRequest() }
         ],
         { cancelable: false }
       );
@@ -361,18 +379,18 @@ export default class loc extends React.Component {
   }
 
   async saveLoc() {
-    navigator.geolocation.getCurrentPosition(position => {
+    // navigator.geolocation.getCurrentPosition(position => {
         
-        console.log(position["coords"]["latitude"]);
-        console.log(position["coords"]["longitude"]);
-        this.state.latitude = (position["coords"]["latitude"]);
-        this.state.longitude = (position["coords"]["longitude"]);
+    //     console.log(position["coords"]["latitude"]);
+    //     console.log(position["coords"]["longitude"]);
+    //     this.state.latitude = (position["coords"]["latitude"]);
+    //     this.state.longitude = (position["coords"]["longitude"]);
 
-        error: null
+    //     error: null
 
-    }, error => console.log(error),
-    { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
-    );
+    // }, error => console.log(error),
+    // { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
+    // );
     let token = await AsyncStorage.getItem("token");
     await fetch("http://10.40.48.248:5000/saveProviderLoc", {
       method: "POST",
@@ -382,8 +400,8 @@ export default class loc extends React.Component {
         Authorization: "Bearer " + token
       },
       body: JSON.stringify({
-        lat: 30.0,
-        lon: 30.0
+        lat: this.state.latitude,
+        lon: this.state.longitude
       })
     }).catch(error => {
         console.error(error);

@@ -147,7 +147,7 @@ export default class App extends Component {
     return (
       <View style={styles.root}>
         <View style={styles.rect} />
-        <Text style={styles.text}>Register</Text>
+        <Text style={styles.text}>Registration</Text>
         {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}> */}
         {/* <Button large block
           title="Pick an image from camera roll"
@@ -173,7 +173,7 @@ export default class App extends Component {
           </Center>  */}
           
           <Center horizontal>
-              <Button style={styles.button7} onPress={() => {this._pickImage }}>
+              <Button style={styles.button7} onPress={() => {this._pickImage() }}>
                   <Text style={styles.bcont2}>Upload Doc</Text>
               </Button>
               <Button style={styles.button8} onPress={() => {this.reg()}}>
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#42b3f4",
+    backgroundColor: "#7333ce",
     paddingRight: 16,
     paddingLeft: 16,
     borderRadius: 5,
@@ -233,7 +233,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     left: "10.13%",
     top: "15.64%",
-    color: "black",
+    color: "7333ce",
+    fontWeight: "bold",
     fontSize: 23,
     fontFamily: "AGaramondPro-Regular"
   },
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#42b3f4",
+    backgroundColor: "#7333ce",
     paddingRight: 16,
     paddingLeft: 16,
     //paddingBottom: 10,

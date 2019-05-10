@@ -98,10 +98,10 @@ export default class App extends Component {
           {/* <Image source={require("./3.png")} style={styles.image} /> */}
         {/* </Center> */}
         {/* <Center horizontal> */}
-          <TextInput style={styles.input} placeholder="Email" placeholderTextColor='#fff' onChangeText={(email) => this.setState({email})}
+          <TextInput style={styles.input} placeholder="Email" placeholderTextColor='black' onChangeText={(email) => this.setState({email})}
             value={this.state.email}>
           </TextInput>
-          <TextInput style={styles.input2} placeholder="Password" secureTextEntry={true} placeholderTextColor='#fff' onChangeText={(password) => this.setState({password})}
+          <TextInput style={styles.input2} placeholder="Password" secureTextEntry={true} placeholderTextColor='black' onChangeText={(password) => this.setState({password})}
             value={this.state.password}>
           </TextInput>
         {/* </Center> */}
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     position: "absolute",
-    backgroundColor: "rgba(29,72,125,1)",
+    backgroundColor: "white",
     opacity: 1
   },
   Broot: {
@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
   input: {
     //position: "absolute",
     top: "65.49%",
-    borderBottomColor: '#f8f8f8',
-    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    borderBottomWidth: 1.2,
     alignSelf: 'stretch',
     justifyContent:'center',
     alignItems:'center',
@@ -181,8 +181,8 @@ const styles = StyleSheet.create({
   input2: {
     //position: "absolute",
     top: "68.49%",
-    borderBottomColor: '#f8f8f8',
-    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    borderBottomWidth: 1.2,
     alignSelf: 'stretch',
     justifyContent:'center',
     alignItems:'center',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(164,41,34,1)",
+    backgroundColor: "#7333ce",
     paddingRight: 16,
     paddingLeft: 16,
     borderRadius: 5,
