@@ -18,6 +18,7 @@ var img = null;
 var sesid = null;
 var items = [];
 var topic = null;
+var summary = {uname: '', mobileNum: '', rating: ''};
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height)
 
@@ -41,7 +42,8 @@ export default class loc extends React.Component {
             requestID: '',
             base64Image: '',
             topic: '',
-            Severity: ''
+            Severity: '1',
+            seekerEmail: '',
 
 
 
@@ -175,14 +177,21 @@ export default class loc extends React.Component {
     
 
     await this.eventSource1.addEventListener("message", data => {
-      console.log(data.type); // message
-      console.log(data.data);
-      let req_id = data.data.slice(1)
-      AsyncStorage.setItem("request_id", req_id)
-      console.log(Object.keys(req_id))
+      //console.log(data.type); // message
+      //console.log(data.data);
+      let dt = data.data.slice(1);
+      var obj = JSON.parse(dt)
+      //AsyncStorage.setItem("request_id", req_id)
+      console.log("HEYYYYY", obj)
+      summary.uname = obj.username,
+      summary.rating = obj.rating,
+      summary.mobileNum = obj.mobileNum,
+      this.state.seekerEmail = obj.seekerEmail,
+      console.log("Hey 2", obj.requestID),
+      this.state.requestID = obj.requestID
       Alert.alert(
         "Request Available",
-        "Request ID: " + req_id,
+        "Description: " + obj.description,
         [
           
           {
@@ -202,6 +211,8 @@ export default class loc extends React.Component {
     this.eventSource1.close();
       
     });
+
+    
 
 
 
@@ -232,7 +243,7 @@ export default class loc extends React.Component {
 
   async accept() {
     let token = await AsyncStorage.getItem("token");
-    let reqID = await AsyncStorage.getItem("request_id")
+    //let reqID = await AsyncStorage.getItem("request_id")
     await fetch("http://10.40.48.248:5000/acceptSeekerRequest", {
       method: "POST",
       headers: {
@@ -241,7 +252,7 @@ export default class loc extends React.Component {
         Authorization: "Bearer " + token
       },
       body: JSON.stringify({
-        request_id : reqID,
+        request_id : this.state.requestID,
         num_providers: 1,
       })
     })
@@ -275,7 +286,7 @@ export default class loc extends React.Component {
       console.log(data.type); // message
       console.log(data.data);
       this.toggleRequestPage()
-      this.on_connect('minawi2@gmail.com')
+      this.on_connect(this.state.seekerEmail)
       this.setState({
         dataz: data.data
       });
@@ -311,7 +322,7 @@ export default class loc extends React.Component {
         Authorization: "Bearer " + token
       },
       body: JSON.stringify({
-        request_id : reqID
+        request_id : this.state.requestID,
       })
     })
       .then(response => response.text())
@@ -326,34 +337,38 @@ export default class loc extends React.Component {
       });
   }
 
+  startSev(){
+    Alert.alert(
+      ' Pick Severity',
+       '',
+       [
+         {
+           text: "Low",
+           onPress: () => {this.state.Severity = '1', this.endRequest()},
+           style: "cancel"
+         },
+         {
+          text: "Medium",
+          onPress: () => {this.state.Severity = '2', this.endRequest()},
+          style: "cancel"
+        },
+        {
+          text: "High",
+          onPress: () => {this.state.Severity = '3', this.endRequest()},
+          style: "cancel"
+        }
+       ],
+       { cancelable: false }
+     ); 
+  }
+
   async endRequest() {
-      Alert.alert(
-        ' Pick Severity',
-         '',
-         [
-           {
-             text: "Low",
-             onPress: () => this.state.Severity = '1',
-             style: "cancel"
-           },
-           {
-            text: "Medium",
-            onPress: () => this.state.Severity = '2',
-            style: "cancel"
-          },
-          {
-            text: "High",
-            onPress: () => this.state.Severity = '3',
-            style: "cancel"
-          }
-         ],
-         { cancelable: false }
-       ); 
+      
     const x = {
       "fees" : "100"
     }
     let token = await AsyncStorage.getItem("token");
-    let reqID = await AsyncStorage.getItem("request_id")
+    //let reqID = await AsyncStorage.getItem("request_id")
     await fetch("http://10.40.48.248:5000/endRequest", {
       method: "POST",
       headers: {
@@ -363,8 +378,8 @@ export default class loc extends React.Component {
       },
       body : JSON.stringify({
         fees : 100,
-        request_id : reqID,
-        trueSeverity: ''
+        request_id : this.state.requestID,
+        trueSeverity: this.state.Severity,
       })
     })
       .then(response => response.text())
@@ -480,7 +495,7 @@ export default class loc extends React.Component {
             {/* <Text style={{fontSize: 20, color: 'black', top: '50%'}}>On Request</Text> */}
           <Button full success style={styles.button} onPress={() => {this.change()}} ><Text style={{color:'#ffffff'}}>CHAT</Text></Button>
           <Button full success style={styles.button} onPress={() => {this.cancelRequest()}} ><Text style={{color:'#ffffff'}}>CANCEL</Text></Button>
-          <Button full success style={styles.button} onPress={() => {this.endRequest()}} ><Text style={{color:'#ffffff'}}>END</Text></Button>
+          <Button full success style={styles.button} onPress={() => {this.startSev()}} ><Text style={{color:'#ffffff'}}>END</Text></Button>
 
       </View>
 
