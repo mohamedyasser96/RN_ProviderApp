@@ -66,7 +66,7 @@ export default class App extends Component {
       async register2()
       {
         try { 
-         let result = await fetch('http://10.40.59.113:5000/login/provider', {
+         let result = await fetch('http://10.40.48.248:5000/login/provider', {
          method: 'POST',
          headers: {
            Accept: 'application/json',
@@ -118,6 +118,7 @@ export default class App extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   root: {
     backgroundColor: "white",

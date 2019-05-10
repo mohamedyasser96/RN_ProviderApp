@@ -41,6 +41,7 @@ export default class loc extends React.Component {
             requestID: '',
             base64Image: '',
             topic: '',
+            Severity: ''
 
 
 
@@ -80,7 +81,7 @@ export default class loc extends React.Component {
 
     async on_connect(emails){
 
-      var socket = new SockJS('http://10.40.59.113:5000/chat');
+      var socket = new SockJS('http://10.40.48.248:5000/chat');
       stompClient = Stomp.over(socket);  
 
       let email =  await AsyncStorage.getItem('email');
@@ -163,7 +164,7 @@ export default class loc extends React.Component {
     //}
       let token = await AsyncStorage.getItem("token");
     console.log(token);
-    this.eventSource1 = await new EventSource("http://10.40.59.113:5000/notification", {
+    this.eventSource1 = await new EventSource("http://10.40.48.248:5000/notification", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -214,7 +215,7 @@ export default class loc extends React.Component {
   async accept() {
     let token = await AsyncStorage.getItem("token");
     let reqID = await AsyncStorage.getItem("request_id")
-    await fetch("http://10.40.59.113:5000/acceptSeekerRequest", {
+    await fetch("http://10.40.48.248:5000/acceptSeekerRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -222,7 +223,8 @@ export default class loc extends React.Component {
         Authorization: "Bearer " + token
       },
       body: JSON.stringify({
-        request_id : reqID
+        request_id : reqID,
+        num_providers: 1,
       })
     })
       .then(response => response.text())
@@ -241,7 +243,7 @@ export default class loc extends React.Component {
         console.error(error);
       });
 
-    this.eventSource2 = await new EventSource("http://10.40.59.113:5000/notifyProvider", {
+    this.eventSource2 = await new EventSource("http://10.40.48.248:5000/notifyProvider", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -283,7 +285,7 @@ export default class loc extends React.Component {
   async cancelRequest() {
     let token = await AsyncStorage.getItem("token");
     let reqID = await AsyncStorage.getItem("request_id")
-    await fetch("http://10.40.59.113:5000/cancelRequest", {
+    await fetch("http://10.40.48.248:5000/cancelRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -307,12 +309,34 @@ export default class loc extends React.Component {
   }
 
   async endRequest() {
+      Alert.alert(
+        ' Pick Severity',
+         '',
+         [
+           {
+             text: "Low",
+             onPress: () => this.state.Severity = '1',
+             style: "cancel"
+           },
+           {
+            text: "Medium",
+            onPress: () => this.state.Severity = '2',
+            style: "cancel"
+          },
+          {
+            text: "High",
+            onPress: () => this.state.Severity = '3',
+            style: "cancel"
+          }
+         ],
+         { cancelable: false }
+       ); 
     const x = {
       "fees" : "100"
     }
     let token = await AsyncStorage.getItem("token");
     let reqID = await AsyncStorage.getItem("request_id")
-    await fetch("http://10.40.59.113:5000/endRequest", {
+    await fetch("http://10.40.48.248:5000/endRequest", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -321,7 +345,8 @@ export default class loc extends React.Component {
       },
       body : JSON.stringify({
         fees : 100,
-        request_id : reqID
+        request_id : reqID,
+        trueSeverity: ''
       })
     })
       .then(response => response.text())
@@ -349,7 +374,7 @@ export default class loc extends React.Component {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
     );
     let token = await AsyncStorage.getItem("token");
-    await fetch("http://10.40.59.113:5000/saveProviderLoc", {
+    await fetch("http://10.40.48.248:5000/saveProviderLoc", {
       method: "POST",
       headers: {
         Accept: "application/json",
