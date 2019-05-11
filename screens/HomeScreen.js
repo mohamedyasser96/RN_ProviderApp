@@ -286,26 +286,54 @@ export default class loc extends React.Component {
     await this.eventSource2.addEventListener("message", data => {
       console.log(data.type); // message
       console.log(data.data);
+
+      if(data.data.toString().charAt(0) === 'S')
+      {
+        Alert.alert(
+          "Hey",
+          data.data,
+          [
+            {
+              text: "OK",
+              onPress: () => console.log("OK Pressed"),
+              style: "cancel"
+            }
+            // { text: "CANCEL", onPress: () => this.cancelRequest() },
+            // { text: "END", onPress: () => this.endRequest() }
+          ],
+          { cancelable: false }
+        );
+      }
+      else{
+        Alert.alert(
+          "Congratz",
+          data.data,
+          [
+            {
+              text: "OK",
+              onPress: () => console.log("OK Pressed"),
+              style: "cancel"
+            }
+            // { text: "CANCEL", onPress: () => this.cancelRequest() },
+            // { text: "END", onPress: () => this.endRequest() }
+          ],
+          { cancelable: false }
+        );
+      }
+
+
+
+
       this.toggleRequestPage()
       this.on_connect(this.state.seekerEmail)
       this.setState({
         dataz: data.data
       });
+    }
 
-      Alert.alert(
-        "CONGRATS",
-        "YOUR SERVICE HAS BEEN CHOSEN",
-        [
-          {
-            text: "OK",
-            onPress: () => console.log("OK Pressed"),
-            style: "cancel"
-          }
-          // { text: "CANCEL", onPress: () => this.cancelRequest() },
-          // { text: "END", onPress: () => this.endRequest() }
-        ],
-        { cancelable: false }
-      );
+
+
+      
     // this.eventSource.removeAllListeners();
     this.eventSource2.close();
     });
