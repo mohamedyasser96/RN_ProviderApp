@@ -18,7 +18,13 @@ import FetchLocation from "./app/components/FetchLocation"
     Main: {screen: MainScreen},
     Test: {screen: Test}
 
-  });
+  },{
+    headerMode: 'none',
+    navigationOptions: {
+      header: null
+    }
+  }
+  );
   const App = createAppContainer(MainNavigator);
 
   export default App;

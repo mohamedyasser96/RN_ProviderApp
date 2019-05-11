@@ -94,9 +94,9 @@ export default class App extends Component {
     return (
       <KeyboardAvoidingView style={styles.root} behavior="padding" enabled>
       <View style={styles.rect} />
-        {/* <Center horizontal> */}
-          {/* <Image source={require("./3.png")} style={styles.image} /> */}
-        {/* </Center> */}
+        <Center horizontal> */}
+          <Image source={require("./logo.png")} style={styles.image} />
+        </Center>
         {/* <Center horizontal> */}
           <TextInput style={styles.input} placeholder="Email" placeholderTextColor='black' onChangeText={(email) => this.setState({email})}
             value={this.state.email}>

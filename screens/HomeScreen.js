@@ -459,7 +459,7 @@ export default class loc extends React.Component {
        <View style={styles.container}>
 
        <MapView
-              style={styles.map}
+              style={styles.map2}
               region={{
                 latitude: this.state.latitude,
                 longitude: this.state.longitude,
@@ -483,7 +483,7 @@ export default class loc extends React.Component {
       <View style={styles.container}>
 
           <MapView
-                  style={styles.map}
+                  style={styles.map2}
                   region={{
                     latitude: this.state.latitude,
                     longitude: this.state.longitude,
@@ -493,11 +493,54 @@ export default class loc extends React.Component {
                   <Marker coordinate={this.state} />
                   <Marker coordinate={this.provs} pinColor='#417df4'/>
             </MapView>
-            {/* <Text style={{fontSize: 20, color: 'black', top: '50%'}}>On Request</Text> */}
-          <Button full success style={styles.button} onPress={() => {this.change()}} ><Text style={{color:'#ffffff'}}>CHAT</Text></Button>
-          <Button full success style={styles.button} onPress={() => {this.cancelRequest()}} ><Text style={{color:'#ffffff'}}>CANCEL</Text></Button>
-          <Button full success style={styles.button} onPress={() => {this.startSev()}} ><Text style={{color:'#ffffff'}}>END</Text></Button>
+            <Text style={{fontSize: 15, color: 'black', top: '80%', fontWeight: 'bold'}}>{"Username: " + summary.uname}</Text>
+            <Text style={{fontSize: 15, color: 'black', top: '83%', fontWeight: 'bold'}}>{"Rating: " + summary.rating + " Stars"}</Text>
+            <Text style={{fontSize: 15, color: 'black', top: '85%', fontWeight: 'bold'}}>{"Mobile: " + summary.mobileNum}</Text>
 
+            {/* <Text style={{fontSize: 20, color: 'black', top: '50%'}}>On Request</Text> */}
+          {/* <Button full success style={styles.button} onPress={() => {this.change()}} ><Text style={{color:'#ffffff'}}>CHAT</Text></Button>
+          <Button full success style={styles.button} onPress={() => {this.cancelRequest()}} ><Text style={{color:'#ffffff'}}>CANCEL</Text></Button>
+          <Button full success style={styles.button} onPress={() => {this.startSev()}} ><Text style={{color:'#ffffff'}}>END</Text></Button> */}
+          <View  style={{
+                  flex: 1,
+                  marginTop:screenHeight*0.1,
+                  backgroundColor: 'transparent',
+                  flexDirection: 'row',
+                }} >
+                        <Button rounded style={{
+                            alignSelf: 'flex-end',
+                            alignItems: 'center',
+                            marginLeft:screenWidth*0.03,
+                            backgroundColor: '#42b3f4'
+                          }}
+                          onPress={() => {this.change()}}
+          
+                          >
+                      <Text>  Chat   </Text>
+                    </Button>
+          
+                    <Button full rounded  style={{
+                            alignSelf: 'flex-end',
+                            alignItems: 'center',
+                            marginLeft:screenWidth*0.03,
+                            backgroundColor: '#2fa1e2'
+                          }}
+                          onPress={() => {this.cancelRequest()}}
+                          >
+                      <Text>   Cancel   </Text>
+                    </Button>
+
+                    <Button full rounded  style={{
+                            alignSelf: 'flex-end',
+                            alignItems: 'center',
+                            marginLeft:screenWidth*0.03,
+                            backgroundColor: '#258bc6'
+                          }}
+                          onPress={() => {this.startSev()}}
+                          >
+                      <Text>   End   </Text>
+                    </Button>
+            </View>
       </View>
 
 );
@@ -505,7 +548,7 @@ else{
     return (
         <View>
           <ScrollView style={{position: 'absolute',
-            top: 10,
+            top: 25,
             width: '100%',
             height: '70%',}}>
             { 
@@ -523,7 +566,7 @@ else{
             }
           </ScrollView>
           <TextInput
-                style={[styles.default, {marginTop:screenHeight*0.65 ,height: Math.max(35, this.state.height)}]}
+                style={[styles.default, {marginTop:screenHeight*0.75 ,height: Math.max(35, this.state.height)}]}
                 placeholder="Message"
                 value={this.state.mess}
                 onChangeText={(text) => this.setState({mess:text})}
@@ -586,7 +629,159 @@ else{
 }
 }
 
- const styles = StyleSheet.create({
+
+const styles = StyleSheet.create({
+  item:{
+   backgroundColor: 'white',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    //backgroundGradient: 'vertical',
+    paddingLeft:60,
+    paddingRight:60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+   ...StyleSheet.absoluteFillObject,
+   height: 630,
+ },
+ map2: {
+   ...StyleSheet.absoluteFillObject,
+   height: 550,
+ },
+ input: {
+   //position: "absolute",
+   top: "30%",
+   borderBottomColor: 'black',
+   borderBottomWidth: 1,
+   alignSelf: 'stretch',
+   justifyContent:'center',
+   alignItems:'center',
+   
+   color: 'black'
+ },
+ text:{
+   top: "30%",
+   fontWeight: "bold",
+   color: "black",
+   fontSize: 14,
+   paddingBottom: 5,
+ },
+ gridView: {
+   marginTop: 20,
+   flex: 1,
+ },
+ itemContainer: {
+   justifyContent: 'flex-end',
+   borderRadius: 30,
+   padding: 10,
+   height: 190,
+ },
+ itemName: {
+   fontSize: 14,
+   color: '#fff',
+   fontWeight: '600',
+ },
+ itemCode: {
+   fontWeight: '600',
+   fontSize: 12,
+   color: '#fff',
+ },
+ dd:{
+   alignSelf: 'stretch',
+   alignItems: 'center',
+   padding: 10,
+   paddingBottom: 10,
+   //backgroundColor: '#1990e5',
+   //marginTop: 30,
+   top: "80%",
+   //left: 148.53
+ },
+ button:{
+   alignSelf: 'stretch',
+   alignItems: 'center',
+   padding: 10,
+   paddingBottom: 5,
+   backgroundColor: '#42b3f4',
+   marginTop: 5,
+   top: "98%",
+   //left: 148.53
+ },
+ buttonC:{
+   //alignSelf: 'stretch',
+   alignItems: 'center',
+   padding: 10,
+   paddingBottom: 10,
+   //backgroundColor: '#1990e5',
+   marginTop: 5,
+   //top: "90%",
+   position: 'absolute', //Here is the trick
+   bottom: 0,
+   //left: 148.53
+ },
+ buttonD:{
+   //alignSelf: 'stretch',
+   alignItems: 'center',
+   padding: 10,
+   paddingBottom: 10,
+   //backgroundColor: '#1990e5',
+   marginTop: 5,
+   top: "100%",
+   //left: 148.53
+ },
+ btntext:{
+     alignItems: 'center',
+     fontSize: 17,
+     justifyContent: 'center',
+     left: 148.53,
+     backgroundColor: '#ffffff',
+     //colo
+
+ },
+ button4: {
+   position: "absolute",
+   height: 43,
+   top: "58.98%",
+   left: 148.53
+ },
+ text2: {
+   borderColor: 'black',
+   borderWidth : 1,
+   fontSize: 15,
+   color: "black",
+   padding :15
+},
+text3: {
+ borderColor: 'black',
+ borderWidth : 1,
+ fontSize: 15,
+ color: "white",
+ padding :15
+},
+container2: {
+ paddingTop : 20,
+ //flex: 1,
+},
+container3: {
+ flex: 1,
+},
+button2:{
+ color : "blue",
+ top: "25%"
+
+},
+bottom:{
+ flex: 1,
+ justifyContent: 'flex-end',
+   //marginBottom: 36
+ 
+}
+
+});
+
+ const styles2 = StyleSheet.create({
    container: {
      flex: 1,
      backgroundColor: '#ffffff',
