@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     marginRight:60
   },
   button7: {
-    top: 679,
+    top: '82.5%',
     position: "absolute",
     height: 44,
     width: 130,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     opacity: 0.91
   },
   button9: {
-    top: 738.5,
+    top: '90%',
     position: "absolute",
     height: 44,
     left: "32.8%",
