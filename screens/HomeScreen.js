@@ -87,6 +87,7 @@ export default class loc extends React.Component {
       stompClient = Stomp.over(socket);  
 
       let email =  await AsyncStorage.getItem('email');
+      this.state.email = email;
       topic = emails + "_" + email;
       this.state.topic = topic
 

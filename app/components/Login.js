@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   text2: {
-    top: 732,
+    top: '89%',
     position: "absolute",
     backgroundColor: "transparent",
     left: "32.8%"

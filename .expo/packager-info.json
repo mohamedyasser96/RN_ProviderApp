@@ -1,10 +1,10 @@
 {
-  "devToolsPort": 19002,
+  "devToolsPort": 19003,
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://cf-xcf.anonymous.prov.exp.direct",
+  "packagerNgrokUrl": "https://packager.cf-xcf.anonymous.prov.exp.direct",
+  "ngrokPid": 2272,
   "webpackServerPort": null
 }
