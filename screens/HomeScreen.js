@@ -387,12 +387,26 @@ export default class loc extends React.Component {
       .then(responseJson => {
         // console.log("**************", response)
         console.log(responseJson)
-        this.alert("SUCCESS", responseJson)
+        //this.alert("SUCCESS", responseJson)
+        Alert.alert(
+          title,
+          message,
+          [
+            {
+              text: "OK",
+              onPress: () => {this.toggleRequestPage()},
+              style: "cancel"
+            }
+          ],
+          { cancelable: false }
+        );
       })
       .catch(error => {
         console.error(error);
       });
   }
+
+  
 
   async saveLoc() {
     // navigator.geolocation.getCurrentPosition(position => {
