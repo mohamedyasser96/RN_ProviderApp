@@ -319,17 +319,19 @@ export default class loc extends React.Component {
           ],
           { cancelable: false }
         );
+
+        this.toggleRequestPage()
+        this.on_connect(this.state.seekerEmail)
+        this.setState({
+          dataz: data.data
+        });
       }
 
 
 
 
-      this.toggleRequestPage()
-      this.on_connect(this.state.seekerEmail)
-      this.setState({
-        dataz: data.data
-      });
-    }
+      
+    
 
 
 
@@ -659,7 +661,7 @@ else{
                   }}
                   onPress={() => {this.change()}}
                   >
-              <Text>   `back`   </Text>
+              <Text>   back   </Text>
             </Button>
   
   
@@ -886,4 +888,3 @@ bottom:{
     left: 148.53
   }
 });
-
